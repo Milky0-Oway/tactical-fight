@@ -9,8 +9,8 @@ import { Monk } from './Healers/Monk';
 import { Sirena } from './Paralizers/Sirena';
 import { Unit, Units } from './Unit';
 
-export class GeneralUnitFactory {
-    createUnit(type: Units, position: Array<number>): Unit {
+export class UnitFactory {
+    public static createUnit(type: Units, position: Array<number>): Unit {
         switch (type) {
             case Units.Archimage:
                 return new Archimage(position);

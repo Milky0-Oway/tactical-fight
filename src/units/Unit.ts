@@ -1,4 +1,5 @@
 import { UnitBehavior } from './Behavior/UnitBehavior';
+import { Team } from './Team';
 
 export abstract class Unit {
     public position: Array<number>;
@@ -14,6 +15,7 @@ export abstract class Unit {
     public isDefending: boolean = false;
     public image: string = '';
     public hasCompletedTheTurn: boolean = false;
+    public isCurrent: boolean = false;
 
     private behavior: UnitBehavior;
 
@@ -22,8 +24,8 @@ export abstract class Unit {
         this.behavior = behavior;
     }
 
-    public performAction(target: Unit | Unit[]): void {
-        this.behavior.performAction(this, target);
+    public performAction(target: Unit | Unit[], team: Team): void {
+        this.behavior.performAction(this, target, team);
     }
 
     public paralyze(): void {
@@ -43,9 +45,14 @@ export abstract class Unit {
     }
 
     public takeDamage(damage: number): void {
-        this.currentHp -= damage;
+        if (this.isDefending) {
+            this.currentHp -= damage / 2;
+        } else {
+            this.currentHp -= damage;
+        }
         if (this.currentHp <= 0) {
             this.currentHp = 0;
+            this.isParalyzed = false;
         }
     }
 
