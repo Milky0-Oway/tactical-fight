@@ -38,6 +38,14 @@ export abstract class Unit {
 
     public completeTurn(): void {
         this.hasCompletedTheTurn = true;
+        this.isCurrent = false;
+    }
+
+    public resetTurn(): void {
+        this.hasCompletedTheTurn = false;
+        this.isCurrent = false;
+        this.isDefending = false;
+        this.isParalyzed = false;
     }
 
     public isAlive() {
@@ -85,13 +93,13 @@ export enum Units {
 }
 
 export enum unitsImages {
-    Skeleton = '/assets/skeleton.jpg',
-    Centaur = '/assets/centaur.jpg',
-    Bandit = '/assets/bandit.jpg',
-    ElfArcher = '/assets/elfArcher.jpg',
-    SkeletonMage = '/assets/skeletonMage.jpg',
-    Archimage = '/assets/archimage.jpg',
-    Monk = '/assets/monk.jpg',
-    Bishop = '/assets/bishop.png',
-    Sirena = '/assets/siren.png',
+    Skeleton = '../../assets/skeleton.jpg',
+    Centaur = '../../assets/centaur.jpg',
+    Bandit = '../../assets/bandit.jpg',
+    ElfArcher = '../../assets/elfArcher.jpg',
+    SkeletonMage = '../../assets/skeletonMage.jpg',
+    Archimage = '../../assets/archimage.jpg',
+    Monk = '../../assets/monk.jpg',
+    Bishop = '../../assets/bishop.png',
+    Sirena = '../../assets/siren.png',
 }

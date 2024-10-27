@@ -1,5 +1,5 @@
 import { Unit } from '../units/Unit';
-import { Team } from '../units/Team';
+import { Team, teams } from '../units/Team';
 import { UnitsForTurn } from './UnitsForTurn';
 import { AttackTurn } from './AttackTurn';
 
@@ -7,41 +7,131 @@ export class PossibleTargets {
     public static definePossibleMeleeTargets(
         unit: Unit,
         enemyTeam: Team,
+        myTeam: Team,
     ): Unit[] {
         const possibleTargets: Unit[] = [];
+        const enemyUnits = enemyTeam.getUnits();
+        const myUnits = myTeam.getUnits();
 
-        enemyTeam.getAliveUnits().forEach((enemyUnit) => {
+        enemyUnits.forEach((enemyUnit) => {
             const rowDiff = Math.abs(enemyUnit.position[0] - unit.position[0]);
+            const columnDiff = Math.abs(
+                enemyUnit.position[1] - unit.position[1],
+            );
 
             if (rowDiff === 1) {
-                const columnDiff = Math.abs(
-                    enemyUnit.position[1] - unit.position[1],
-                );
-
                 if (columnDiff <= 1 && enemyUnit.isAlive()) {
                     possibleTargets.push(enemyUnit);
-                }
+                } else if (columnDiff === 2) {
+                    if (enemyUnit.position[1] === 3) {
+                        let unitIsReachable = false;
 
-                if (
-                    columnDiff === 2 &&
-                    this.isUnitReachableThroughDeadUnits(
-                        unit,
-                        enemyTeam,
-                        enemyUnit,
-                    )
-                ) {
-                    if (enemyUnit.isAlive()) {
-                        possibleTargets.push(enemyUnit);
+                        if (enemyTeam.name === teams.B) {
+                            unitIsReachable =
+                                !enemyUnits[0].isAlive() &&
+                                !enemyUnits[1].isAlive();
+                        } else {
+                            unitIsReachable =
+                                !enemyUnits[3].isAlive() &&
+                                !enemyUnits[4].isAlive();
+                        }
+
+                        if (unitIsReachable && enemyUnit.isAlive()) {
+                            possibleTargets.push(enemyUnit);
+                        }
+                    } else if (enemyUnit.position[1] === 1) {
+                        let unitIsReachable = false;
+
+                        if (enemyTeam.name === teams.B) {
+                            unitIsReachable =
+                                !enemyUnits[2].isAlive() &&
+                                !enemyUnits[1].isAlive();
+                        } else {
+                            unitIsReachable =
+                                !enemyUnits[5].isAlive() &&
+                                !enemyUnits[4].isAlive();
+                        }
+
+                        if (unitIsReachable && enemyUnit.isAlive()) {
+                            possibleTargets.push(enemyUnit);
+                        }
                     }
                 }
-            }
+            } else if (rowDiff === 2) {
+                if (unit.position[0] === 2 || unit.position[0] === 3) {
+                    if (unit.position[1] === 2) {
+                        if (
+                            enemyTeam.name === teams.B &&
+                            !enemyUnits[1].isAlive()
+                        ) {
+                            for (let i = 3; i < 6; i++) {
+                                if (enemyUnits[i].isAlive())
+                                    possibleTargets.push(enemyUnits[i]);
+                            }
+                        } else if (
+                            enemyTeam.name === teams.A &&
+                            !enemyUnits[4].isAlive()
+                        ) {
+                            for (let i = 0; i < 3; i++) {
+                                if (enemyUnits[i].isAlive())
+                                    possibleTargets.push(enemyUnits[i]);
+                            }
+                        }
+                    } else {
+                        let isReachable = true;
+                        if (enemyTeam.name === teams.B) {
+                            for (let i = 0; i < 3; i++) {
+                                isReachable =
+                                    isReachable && !enemyUnits[i].isAlive();
+                            }
+                        } else {
+                            for (let i = 3; i < 6; i++) {
+                                isReachable =
+                                    isReachable && !enemyUnits[i].isAlive();
+                            }
+                        }
 
-            if (
-                rowDiff === 2 &&
-                this.isUnitReachableThroughDeadUnits(unit, enemyTeam, enemyUnit)
-            ) {
-                if (enemyUnit.isAlive()) {
-                    possibleTargets.push(enemyUnit);
+                        if (isReachable && enemyUnit.isAlive()) {
+                            possibleTargets.push(enemyUnit);
+                        }
+                    }
+                } else {
+                    if (unit.position[1] === 2) {
+                        if (
+                            enemyTeam.name === teams.B &&
+                            !myUnits[4].isAlive()
+                        ) {
+                            for (let i = 0; i < 3; i++) {
+                                if (enemyUnits[i].isAlive())
+                                    possibleTargets.push(enemyUnits[i]);
+                            }
+                        } else if (
+                            enemyTeam.name === teams.A &&
+                            !enemyUnits[1].isAlive()
+                        ) {
+                            for (let i = 3; i < 6; i++) {
+                                if (enemyUnits[i].isAlive())
+                                    possibleTargets.push(enemyUnits[i]);
+                            }
+                        }
+                    } else {
+                        let isReachable = true;
+                        if (enemyTeam.name === teams.B) {
+                            for (let i = 3; i < 6; i++) {
+                                isReachable =
+                                    isReachable && !myUnits[i].isAlive();
+                            }
+                        } else {
+                            for (let i = 0; i < 3; i++) {
+                                isReachable =
+                                    isReachable && !myUnits[i].isAlive();
+                            }
+                        }
+
+                        if (isReachable && enemyUnit.isAlive()) {
+                            possibleTargets.push(enemyUnit);
+                        }
+                    }
                 }
             }
         });
@@ -59,8 +149,6 @@ export class PossibleTargets {
 
     public static noTargetsAction(unit: Unit, attackingTeam: Team): void {
         unit.completeTurn();
-        unit.isCurrent = false;
-        attackingTeam.isAttacking = false;
 
         const nextUnit = AttackTurn.getNextAttackingUnit(
             UnitsForTurn.UnitsForTurn(attackingTeam),
@@ -70,29 +158,5 @@ export class PossibleTargets {
         } else {
             AttackTurn.finishTurn(attackingTeam);
         }
-    }
-
-    private static isUnitReachableThroughDeadUnits(
-        attacker: Unit,
-        enemyTeam: Team,
-        target: Unit,
-    ): boolean {
-        const attackerRow = attacker.position[0];
-        const targetRow = target.position[0];
-
-        if (Math.abs(attackerRow - targetRow) <= 1) {
-            return true;
-        }
-
-        const frontRow = attackerRow === 0 ? 1 : 0;
-        const deadUnitsInFront = enemyTeam
-            .getUnits()
-            .filter((unit) => unit.position[0] === frontRow && !unit.isAlive());
-
-        const allUnitsInFront = enemyTeam
-            .getUnits()
-            .filter((unit) => unit.position[0] === frontRow);
-
-        return deadUnitsInFront.length === allUnitsInFront.length;
     }
 }

@@ -6,14 +6,12 @@ export class Team {
     public name: string;
     private units: Unit[];
     public isMyTurn: boolean;
-    public isAttacking: boolean;
     public isAttackTurnCompleted: boolean;
 
     constructor(name: string) {
         this.name = name;
         this.isMyTurn = name === teams.A;
         this.isAttackTurnCompleted = false;
-        this.isAttacking = false;
 
         if (name === teams.A) {
             this.units = [
@@ -55,6 +53,14 @@ export class Team {
         this.getAliveUnits().forEach((unit) => {
             action(unit, targets);
         });
+    }
+
+    public clearDefending(): void {
+        this.units.forEach((unit) => (unit.isDefending = false));
+    }
+
+    public clearParalyzing(): void {
+        this.units.forEach((unit) => (unit.isParalyzed = false));
     }
 }
 

@@ -9,8 +9,7 @@ export class AttackTurn {
         currentTarget: Unit | Unit[] | null,
     ): void => {
         const unitsInTurn = UnitsForTurn.UnitsForTurn(attackingTeam);
-
-        const currentAttackingUnit = this.prepareAttackingUnit(unitsInTurn);
+        const currentAttackingUnit = this.getCurrentAttackingUnit(unitsInTurn);
 
         if (!currentAttackingUnit || unitsInTurn.length === 0) {
             this.finishTurn(attackingTeam);
@@ -18,7 +17,8 @@ export class AttackTurn {
         }
 
         if (currentAttackingUnit.isDefending) {
-            this.skipTurn(currentAttackingUnit, attackingTeam);
+            this.skipTurn(currentAttackingUnit, unitsInTurn);
+            this.checkEndOfTurn(attackingTeam, currentAttackingUnit);
             return;
         }
 
@@ -32,23 +32,23 @@ export class AttackTurn {
 
         currentAttackingUnit.completeTurn();
         this.setNextAttackingUnit(attackingTeam, unitsInTurn);
+
+        if (unitsInTurn.length === 1) {
+            this.checkEndOfTurn(attackingTeam, currentAttackingUnit);
+        }
     };
 
-    private static prepareAttackingUnit(unitsInTurn: Unit[]): Unit | null {
-        const currentAttackingUnit = this.getCurrentAttackingUnit(unitsInTurn);
-        if (!currentAttackingUnit) return null;
-
-        return currentAttackingUnit;
-    }
-
-    public static skipTurn(currentUnit: Unit, attackingTeam: Team): void {
+    public static skipTurn(currentUnit: Unit, unitsInTurn: Unit[]): void {
         currentUnit.completeTurn();
-        const unitsInTurn = UnitsForTurn.UnitsForTurn(attackingTeam);
-        this.setNextAttackingUnit(attackingTeam, unitsInTurn);
+
+        const nextAttackingUnit = this.getNextAttackingUnit(unitsInTurn);
+        if (nextAttackingUnit) {
+            nextAttackingUnit.isCurrent = true;
+        }
     }
 
     public static getNextAttackingUnit(unitsInTurn: Unit[]): Unit | null {
-        return unitsInTurn.find((unit) => !unit.completeTurn) || null;
+        return unitsInTurn.find((unit) => !unit.hasCompletedTheTurn) || null;
     }
 
     public static finishTurn(attackingTeam: Team): void {
@@ -56,8 +56,8 @@ export class AttackTurn {
         attackingTeam.getUnits().forEach((unit) => unit.resetTurn());
     }
 
-    private static getCurrentAttackingUnit(unitsInTurn: Unit[]): Unit | null {
-        return unitsInTurn.find((unit) => !unit.completeTurn) || null;
+    public static getCurrentAttackingUnit(unitsInTurn: Unit[]): Unit | null {
+        return unitsInTurn.find((unit) => !unit.hasCompletedTheTurn) || null;
     }
 
     private static setNextAttackingUnit(
@@ -72,15 +72,47 @@ export class AttackTurn {
         this.checkEndOfTurn(attackingTeam, nextUnit);
     }
 
-    private static checkEndOfTurn(
+    public static checkEndOfTurn(
         attackingTeam: Team,
         currentUnit: Unit | null,
-    ): void {
-        if (
-            !currentUnit ||
-            !this.getNextAttackingUnit(UnitsForTurn.UnitsForTurn(attackingTeam))
-        ) {
-            this.finishTurn(attackingTeam);
+    ): boolean {
+        const units = UnitsForTurn.UnitsForTurn(attackingTeam);
+
+        if (units.length === 1 && currentUnit) {
+            attackingTeam.isAttackTurnCompleted = true;
+            attackingTeam
+                .getUnits()
+                .forEach((unit) => (unit.hasCompletedTheTurn = false));
+            return true;
         }
+
+        if (
+            units.findIndex((unit) => unit === currentUnit) ===
+            units.length - 1
+        ) {
+            attackingTeam.isAttackTurnCompleted = true;
+            attackingTeam
+                .getUnits()
+                .forEach((unit) => (unit.hasCompletedTheTurn = false));
+            return true;
+        }
+
+        return false;
     }
+
+    public static switchTurn = (teamA: Team, teamB: Team) => {
+        if (teamA.isMyTurn) {
+            teamA.isMyTurn = false;
+            teamB.isMyTurn = true;
+            teamB.isAttackTurnCompleted = false;
+            teamB.clearDefending();
+            teamA.clearParalyzing();
+        } else {
+            teamA.isMyTurn = true;
+            teamA.isAttackTurnCompleted = false;
+            teamB.isMyTurn = false;
+            teamA.clearDefending();
+            teamB.clearParalyzing();
+        }
+    };
 }
