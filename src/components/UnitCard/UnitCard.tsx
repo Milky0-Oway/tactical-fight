@@ -2,12 +2,18 @@ import React, { useEffect, useState } from 'react';
 import { Team } from '../../units/Team';
 import { Unit, UnitType } from '../../units/Unit';
 import { PossibleTargets } from '../../services/PossibleTargets';
+import * as styles from './UnitCard.css';
+import classNames from 'classnames/bind';
+import { assignInlineVars } from '@vanilla-extract/dynamic';
+
+const cx = classNames.bind(styles);
 
 export const UnitCard: React.FC<UnitCardProps> = ({
     attackingUnit,
     attackingTeam,
     enemyTeam,
     unit,
+    selectedUnit,
     handleSetCurrentTarget,
 }) => {
     const [isCurrent, setIsCurrent] = useState(false);
@@ -27,7 +33,6 @@ export const UnitCard: React.FC<UnitCardProps> = ({
             possibleTargets = PossibleTargets.definePossibleMeleeTargets(
                 attackingUnit,
                 enemyTeam,
-                attackingTeam,
             );
         } else if (
             attackingUnit.type === UnitType.HealerMass ||
@@ -49,17 +54,33 @@ export const UnitCard: React.FC<UnitCardProps> = ({
         }
     };
 
+    const cardClass = cx({
+        card: true,
+        paralyzed: unit.isParalyzed,
+        defend: unit.isDefending,
+        dead: !unit.isAlive(),
+        possible: possibleTargets.includes(unit),
+        current: isCurrent,
+        selected: unit === selectedUnit,
+    });
+
     return (
-        <div onClick={handleClick}>
-            {isCurrent && <p>Current</p>}
-            {!unit.isAlive() && <p>Dead</p>}
-            {unit.isParalyzed && <p>Paralyzed</p>}
-            {unit.isDefending && <p>Defending</p>}
-            {possibleTargets.includes(unit) && <p>Possible target</p>}
-            <h2>{unit.name}</h2>
-            <p>
-                {unit.currentHp}/{unit.maxHp}
-            </p>
+        <div onClick={handleClick} className={cardClass}>
+            <img className={styles.image} src={unit.image} alt="Unit Image" />
+            <div className={styles.cardText}>
+                <h2>{unit.name}</h2>
+                <p className={styles.hpText}>
+                    {unit.currentHp}/{unit.maxHp}
+                </p>
+                <div className={styles.hpOutline}>
+                    <div
+                        className={styles.hp}
+                        style={assignInlineVars({
+                            width: `${(unit.currentHp / unit.maxHp) * 100}%`,
+                        })}
+                    />
+                </div>
+            </div>
         </div>
     );
 };
@@ -69,5 +90,6 @@ type UnitCardProps = {
     attackingTeam: Team;
     enemyTeam: Team;
     unit: Unit;
+    selectedUnit: Unit | null;
     handleSetCurrentTarget: (unit: Unit) => void;
 };

@@ -46,15 +46,6 @@ export class Team {
         return this.getAliveUnits().length > 0;
     }
 
-    public performTeamAction(
-        targets: Unit[],
-        action: (unit: Unit, target: Unit[]) => void,
-    ): void {
-        this.getAliveUnits().forEach((unit) => {
-            action(unit, targets);
-        });
-    }
-
     public clearDefending(): void {
         this.units.forEach((unit) => (unit.isDefending = false));
     }

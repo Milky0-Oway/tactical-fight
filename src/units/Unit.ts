@@ -48,7 +48,7 @@ export abstract class Unit {
         this.isParalyzed = false;
     }
 
-    public isAlive() {
+    public isAlive(): boolean {
         return this.currentHp > 0;
     }
 
@@ -93,13 +93,13 @@ export enum Units {
 }
 
 export enum unitsImages {
-    Skeleton = '../../assets/skeleton.jpg',
-    Centaur = '../../assets/centaur.jpg',
-    Bandit = '../../assets/bandit.jpg',
-    ElfArcher = '../../assets/elfArcher.jpg',
-    SkeletonMage = '../../assets/skeletonMage.jpg',
-    Archimage = '../../assets/archimage.jpg',
-    Monk = '../../assets/monk.jpg',
-    Bishop = '../../assets/bishop.png',
-    Sirena = '../../assets/siren.png',
+    Skeleton = 'assets/skeleton.jpg',
+    Centaur = 'assets/centaur.jpg',
+    Bandit = 'assets/bandit.jpg',
+    ElfArcher = 'assets/elfArcher.jpg',
+    SkeletonMage = 'assets/skeletonMage.jpg',
+    Archimage = 'assets/archimage.jpg',
+    Monk = 'assets/monk.jpg',
+    Bishop = 'assets/bishop.png',
+    Sirena = 'assets/siren.jpg',
 }

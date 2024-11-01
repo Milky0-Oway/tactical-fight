@@ -7,11 +7,9 @@ export class PossibleTargets {
     public static definePossibleMeleeTargets(
         unit: Unit,
         enemyTeam: Team,
-        myTeam: Team,
     ): Unit[] {
         const possibleTargets: Unit[] = [];
         const enemyUnits = enemyTeam.getUnits();
-        const myUnits = myTeam.getUnits();
 
         enemyUnits.forEach((enemyUnit) => {
             const rowDiff = Math.abs(enemyUnit.position[0] - unit.position[0]);
@@ -58,79 +56,40 @@ export class PossibleTargets {
                     }
                 }
             } else if (rowDiff === 2) {
-                if (unit.position[0] === 2 || unit.position[0] === 3) {
-                    if (unit.position[1] === 2) {
-                        if (
-                            enemyTeam.name === teams.B &&
-                            !enemyUnits[1].isAlive()
-                        ) {
-                            for (let i = 3; i < 6; i++) {
-                                if (enemyUnits[i].isAlive())
-                                    possibleTargets.push(enemyUnits[i]);
-                            }
-                        } else if (
-                            enemyTeam.name === teams.A &&
-                            !enemyUnits[4].isAlive()
-                        ) {
-                            for (let i = 0; i < 3; i++) {
-                                if (enemyUnits[i].isAlive())
-                                    possibleTargets.push(enemyUnits[i]);
-                            }
+                if (unit.position[1] === 2) {
+                    if (
+                        enemyTeam.name === teams.B &&
+                        !enemyUnits[1].isAlive()
+                    ) {
+                        for (let i = 3; i < 6; i++) {
+                            if (enemyUnits[i].isAlive())
+                                possibleTargets.push(enemyUnits[i]);
                         }
-                    } else {
-                        let isReachable = true;
-                        if (enemyTeam.name === teams.B) {
-                            for (let i = 0; i < 3; i++) {
-                                isReachable =
-                                    isReachable && !enemyUnits[i].isAlive();
-                            }
-                        } else {
-                            for (let i = 3; i < 6; i++) {
-                                isReachable =
-                                    isReachable && !enemyUnits[i].isAlive();
-                            }
-                        }
-
-                        if (isReachable && enemyUnit.isAlive()) {
-                            possibleTargets.push(enemyUnit);
+                    } else if (
+                        enemyTeam.name === teams.A &&
+                        !enemyUnits[4].isAlive()
+                    ) {
+                        for (let i = 0; i < 3; i++) {
+                            if (enemyUnits[i].isAlive())
+                                possibleTargets.push(enemyUnits[i]);
                         }
                     }
                 } else {
-                    if (unit.position[1] === 2) {
-                        if (
-                            enemyTeam.name === teams.B &&
-                            !myUnits[4].isAlive()
-                        ) {
-                            for (let i = 0; i < 3; i++) {
-                                if (enemyUnits[i].isAlive())
-                                    possibleTargets.push(enemyUnits[i]);
-                            }
-                        } else if (
-                            enemyTeam.name === teams.A &&
-                            !enemyUnits[1].isAlive()
-                        ) {
-                            for (let i = 3; i < 6; i++) {
-                                if (enemyUnits[i].isAlive())
-                                    possibleTargets.push(enemyUnits[i]);
-                            }
+                    let isReachable = true;
+                    if (enemyTeam.name === teams.B) {
+                        for (let i = 0; i < 3; i++) {
+                            isReachable =
+                                isReachable && !enemyUnits[i].isAlive();
                         }
                     } else {
-                        let isReachable = true;
-                        if (enemyTeam.name === teams.B) {
-                            for (let i = 3; i < 6; i++) {
-                                isReachable =
-                                    isReachable && !myUnits[i].isAlive();
-                            }
-                        } else {
-                            for (let i = 0; i < 3; i++) {
-                                isReachable =
-                                    isReachable && !myUnits[i].isAlive();
-                            }
+                        for (let i = 3; i < 6; i++) {
+                            isReachable =
+                                isReachable && !enemyUnits[i].isAlive();
                         }
+                    }
 
-                        if (isReachable && enemyUnit.isAlive()) {
-                            possibleTargets.push(enemyUnit);
-                        }
+                    if (isReachable && enemyUnit.isAlive()) {
+                        possibleTargets.push(enemyUnit);
                     }
                 }
             }

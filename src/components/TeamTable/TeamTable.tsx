@@ -1,8 +1,11 @@
 import React from 'react';
-import { Team } from '../../units/Team';
+import { Team, teams } from '../../units/Team';
 import { Unit } from '../../units/Unit';
 import { UnitCard } from '../UnitCard/UnitCard';
-import { table } from './TeamTable.css';
+import * as styles from './TeamTable.css';
+import classNames from 'classnames/bind';
+
+const cx = classNames.bind(styles);
 
 export const TeamTable: React.FC<TeamTableProps> = ({
     currentTeamTurn,
@@ -14,6 +17,7 @@ export const TeamTable: React.FC<TeamTableProps> = ({
     handleSetCurrentTarget,
     handleAction,
     handleCancel,
+    selectedUnit,
 }) => {
     const handleDefend = () => {
         if (attackingUnit) {
@@ -24,8 +28,14 @@ export const TeamTable: React.FC<TeamTableProps> = ({
     };
 
     return (
-        <div>
-            <div className={table}>
+        <div
+            className={cx({
+                container: true,
+                teamA: team.name === teams.A,
+                teamB: team.name === teams.B,
+            })}
+        >
+            <div className={styles.table}>
                 {team.getUnits().map((unit, index) => {
                     return (
                         <UnitCard
@@ -34,13 +44,14 @@ export const TeamTable: React.FC<TeamTableProps> = ({
                             attackingTeam={attackingTeam}
                             enemyTeam={enemyTeam}
                             unit={unit}
+                            selectedUnit={selectedUnit}
                             handleSetCurrentTarget={handleSetCurrentTarget}
                         />
                     );
                 })}
             </div>
             {currentTeamTurn === team.name && (
-                <div>
+                <div className={styles.buttons}>
                     <button onClick={handleDefend}>Defend</button>
                     <button onClick={handleAction}>Do action</button>
                     <button onClick={handleCancel}>Skip</button>
@@ -56,6 +67,7 @@ type TeamTableProps = {
     attackingTeam: Team;
     enemyTeam: Team;
     team: Team;
+    selectedUnit: Unit | null;
     handleNewTurnAction: () => void;
     handleSetCurrentTarget: (unit: Unit) => void;
     handleAction: () => void;

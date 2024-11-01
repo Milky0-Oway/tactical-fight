@@ -5,6 +5,7 @@ import { UnitsForTurn } from '../../services/UnitsForTurn';
 import { Unit, UnitType } from '../../units/Unit';
 import IsGameOver from '../../services/IsGameOver';
 import { TeamTable } from '../TeamTable/TeamTable';
+import { game } from './Game.css';
 
 export const Game: React.FC = () => {
     const [turn, setTurn] = useState(teams.A);
@@ -25,7 +26,6 @@ export const Game: React.FC = () => {
     }, [attackingTeam]);
 
     const handleNewTurn = () => {
-        AttackTurn.processAttackTurn(attackingTeam, enemyTeam, null);
         const nextUnit = AttackTurn.getCurrentAttackingUnit(
             UnitsForTurn.UnitsForTurn(attackingTeam),
         );
@@ -70,8 +70,6 @@ export const Game: React.FC = () => {
         if (IsGameOver.IsGameOver(teamB)) setWinner(teams.A);
 
         handleNewTurn();
-
-        setSelectedTarget(null);
     };
 
     const handleCancel = () => {
@@ -79,6 +77,7 @@ export const Game: React.FC = () => {
             AttackTurn.skipTurn(
                 currentUnit,
                 UnitsForTurn.UnitsForTurn(attackingTeam),
+                attackingTeam,
             );
 
         handleNewTurn();
@@ -100,14 +99,14 @@ export const Game: React.FC = () => {
     }
 
     return (
-        <div>
-            {selectedTarget && <p>{selectedTarget.name} is chosen</p>}
+        <div className={game}>
             <TeamTable
                 team={teamA}
                 currentTeamTurn={turn}
                 attackingUnit={currentUnit}
                 attackingTeam={attackingTeam}
                 enemyTeam={enemyTeam}
+                selectedUnit={selectedTarget}
                 handleNewTurnAction={handleNewTurn}
                 handleAction={handleAction}
                 handleSetCurrentTarget={handleSetTarget}
@@ -119,6 +118,7 @@ export const Game: React.FC = () => {
                 attackingUnit={currentUnit}
                 attackingTeam={attackingTeam}
                 enemyTeam={enemyTeam}
+                selectedUnit={selectedTarget}
                 handleNewTurnAction={handleNewTurn}
                 handleAction={handleAction}
                 handleSetCurrentTarget={handleSetTarget}
