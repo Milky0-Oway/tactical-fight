@@ -5,7 +5,7 @@ export const container = style({
     flexDirection: 'column',
     alignItems: 'center',
     justifyContent: 'center',
-    width: '70%',
+    width: '70vw',
 });
 
 export const table = style({
@@ -18,11 +18,11 @@ export const table = style({
 });
 
 export const teamA = style({
-    backgroundColor: '#00059988',
+    backgroundColor: '#00059940',
 });
 
 export const teamB = style({
-    backgroundColor: '#99000d88',
+    backgroundColor: '#99000d40',
 });
 
 export const buttons = style({

@@ -7,6 +7,7 @@ export const card = style({
     height: 150,
     gap: '10px',
     alignItems: 'center',
+    transition: 'background-color 0.2s ease, transform 0.2s ease',
     ':hover': {
         backgroundColor: '#444',
         cursor: 'pointer',
@@ -62,6 +63,10 @@ export const current = style({
 
 export const selected = style({
     backgroundColor: '#91143e',
+});
+
+export const hover = style({
+    transform: 'translateY(-10px)'
 });
 
 export const image = style({

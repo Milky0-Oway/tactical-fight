@@ -14,6 +14,8 @@ interface GameContextType {
     attackingTeam: Team;
     enemyTeam: Team;
     winner: string | null;
+    hoverUnit: Unit| null;
+    setHoverUnit: (unit: Unit | null) => void;
     handleNewTurn: () => void;
     handleSetTarget: (unit: Unit) => void;
     handleAction: () => void;
@@ -32,6 +34,7 @@ export const GameProvider: React.FC<{ children: React.ReactNode }> = ({
     const [teamB] = useState(new Team(teams.B));
     const [winner, setWinner] = useState<string | null>(null);
     const [currentUnit, setCurrentUnit] = useState<Unit | null>(null);
+    const [hoverUnit, setHoverUnit] = useState<Unit | null>(null);
     const [selectedTarget, setSelectedTarget] = useState<Unit | null>(null);
     const attackingTeam = turn === teams.A ? teamA : teamB;
     const enemyTeam = turn === teams.A ? teamB : teamA;
@@ -39,6 +42,7 @@ export const GameProvider: React.FC<{ children: React.ReactNode }> = ({
     useEffect(() => {
         const nextUnit = AttackTurn.getCurrentAttackingUnit(
             UnitsForTurn.UnitsForTurn(attackingTeam),
+            attackingTeam,
         );
         setCurrentUnit(nextUnit);
     }, [attackingTeam]);
@@ -46,6 +50,7 @@ export const GameProvider: React.FC<{ children: React.ReactNode }> = ({
     const handleNewTurn = () => {
         const nextUnit = AttackTurn.getCurrentAttackingUnit(
             UnitsForTurn.UnitsForTurn(attackingTeam),
+            attackingTeam,
         );
         setCurrentUnit(nextUnit);
         setSelectedTarget(null);
@@ -123,6 +128,8 @@ export const GameProvider: React.FC<{ children: React.ReactNode }> = ({
                 attackingTeam,
                 enemyTeam,
                 winner,
+                hoverUnit,
+                setHoverUnit,
                 handleNewTurn,
                 handleSetTarget,
                 handleAction,

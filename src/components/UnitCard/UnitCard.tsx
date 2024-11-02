@@ -9,7 +9,7 @@ import { useGameContext } from '../Game/useGameContext';
 const cx = classNames.bind(styles);
 
 export const UnitCard: React.FC<UnitCardProps> = ({ attackingUnit, unit }) => {
-    const { attackingTeam, enemyTeam, selectedTarget, handleSetTarget } =
+    const { attackingTeam, enemyTeam, hoverUnit, selectedTarget, handleSetTarget } =
         useGameContext();
 
     const [isCurrent, setIsCurrent] = useState(false);
@@ -58,6 +58,7 @@ export const UnitCard: React.FC<UnitCardProps> = ({ attackingUnit, unit }) => {
         possible: possibleTargets.includes(unit),
         current: isCurrent,
         selected: unit === selectedTarget,
+        hover: unit === hoverUnit,
     });
 
     return (

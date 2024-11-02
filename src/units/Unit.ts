@@ -15,7 +15,6 @@ export abstract class Unit {
     public isDefending: boolean = false;
     public image: string = '';
     public hasCompletedTheTurn: boolean = false;
-    public isCurrent: boolean = false;
 
     private behavior: UnitBehavior;
 
@@ -38,12 +37,10 @@ export abstract class Unit {
 
     public completeTurn(): void {
         this.hasCompletedTheTurn = true;
-        this.isCurrent = false;
     }
 
     public resetTurn(): void {
         this.hasCompletedTheTurn = false;
-        this.isCurrent = false;
         this.isDefending = false;
         this.isParalyzed = false;
     }

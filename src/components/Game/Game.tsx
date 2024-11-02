@@ -2,6 +2,7 @@ import React from 'react';
 import { TeamTable } from '../TeamTable/TeamTable';
 import { useGameContext } from './useGameContext';
 import { game } from './Game.css';
+import { RoundInfo } from '../RoundInfo/RoundInfo';
 
 export const Game: React.FC = () => {
     const { winner, teamA, teamB } = useGameContext();
@@ -12,8 +13,11 @@ export const Game: React.FC = () => {
 
     return (
         <div className={game}>
-            <TeamTable team={teamA} />
-            <TeamTable team={teamB} />
+            <div>
+                <TeamTable team={teamA} />
+                <TeamTable team={teamB} />
+            </div>
+            <RoundInfo/>
         </div>
     );
 };
