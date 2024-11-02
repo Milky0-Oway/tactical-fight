@@ -5,6 +5,7 @@ export class Sirena extends Unit {
     constructor(position: Array<number>) {
         super(position, new ParalyzerBehavior());
 
+        this.id = crypto.randomUUID();
         this.type = UnitType.Paralyzer;
         this.name = Units.Sirena;
         this.maxHp = 80;

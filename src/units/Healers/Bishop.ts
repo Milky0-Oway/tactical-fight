@@ -5,6 +5,7 @@ export class Bishop extends Unit {
     constructor(position: Array<number>) {
         super(position, new HealerMassBehavior());
 
+        this.id = crypto.randomUUID();
         this.type = UnitType.HealerMass;
         this.name = Units.Bishop;
         this.maxHp = 130;

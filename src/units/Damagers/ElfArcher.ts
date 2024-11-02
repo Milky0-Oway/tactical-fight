@@ -5,6 +5,7 @@ export class ElfArcher extends Unit {
     constructor(position: Array<number>) {
         super(position, new RangeBehavior());
 
+        this.id = crypto.randomUUID();
         this.type = UnitType.Range;
         this.name = Units.ElfArcher;
         this.maxHp = 90;

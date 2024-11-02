@@ -1,21 +1,17 @@
 import React, { useEffect, useState } from 'react';
-import { Team } from '../../units/Team';
 import { Unit, UnitType } from '../../units/Unit';
 import { PossibleTargets } from '../../services/PossibleTargets';
 import * as styles from './UnitCard.css';
 import classNames from 'classnames/bind';
 import { assignInlineVars } from '@vanilla-extract/dynamic';
+import { useGameContext } from '../Game/useGameContext';
 
 const cx = classNames.bind(styles);
 
-export const UnitCard: React.FC<UnitCardProps> = ({
-    attackingUnit,
-    attackingTeam,
-    enemyTeam,
-    unit,
-    selectedUnit,
-    handleSetCurrentTarget,
-}) => {
+export const UnitCard: React.FC<UnitCardProps> = ({ attackingUnit, unit }) => {
+    const { attackingTeam, enemyTeam, selectedTarget, handleSetTarget } =
+        useGameContext();
+
     const [isCurrent, setIsCurrent] = useState(false);
 
     useEffect(() => {
@@ -50,7 +46,7 @@ export const UnitCard: React.FC<UnitCardProps> = ({
 
     const handleClick = () => {
         if (possibleTargets.includes(unit)) {
-            handleSetCurrentTarget(unit);
+            handleSetTarget(unit);
         }
     };
 
@@ -61,7 +57,7 @@ export const UnitCard: React.FC<UnitCardProps> = ({
         dead: !unit.isAlive(),
         possible: possibleTargets.includes(unit),
         current: isCurrent,
-        selected: unit === selectedUnit,
+        selected: unit === selectedTarget,
     });
 
     return (
@@ -87,9 +83,5 @@ export const UnitCard: React.FC<UnitCardProps> = ({
 
 type UnitCardProps = {
     attackingUnit: Unit | null;
-    attackingTeam: Team;
-    enemyTeam: Team;
     unit: Unit;
-    selectedUnit: Unit | null;
-    handleSetCurrentTarget: (unit: Unit) => void;
 };

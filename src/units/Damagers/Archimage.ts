@@ -5,6 +5,7 @@ export class Archimage extends Unit {
     constructor(position: Array<number>) {
         super(position, new MageBehavior());
 
+        this.id = crypto.randomUUID();
         this.type = UnitType.Mage;
         this.name = Units.Archimage;
         this.maxHp = 90;

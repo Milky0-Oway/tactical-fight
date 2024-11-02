@@ -5,6 +5,7 @@ export class Monk extends Unit {
     constructor(position: Array<number>) {
         super(position, new HealerSingleBehavior());
 
+        this.id = crypto.randomUUID();
         this.type = UnitType.HealerSingle;
         this.name = Units.Monk;
         this.maxHp = 90;

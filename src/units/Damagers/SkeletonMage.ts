@@ -5,6 +5,7 @@ export class SkeletonMage extends Unit {
     constructor(position: Array<number>) {
         super(position, new MageBehavior());
 
+        this.id = crypto.randomUUID();
         this.type = UnitType.Mage;
         this.name = Units.SkeletonMage;
         this.maxHp = 50;

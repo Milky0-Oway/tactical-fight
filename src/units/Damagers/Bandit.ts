@@ -5,6 +5,7 @@ export class Bandit extends Unit {
     constructor(position: Array<number>) {
         super(position, new RangeBehavior());
 
+        this.id = crypto.randomUUID();
         this.type = UnitType.Range;
         this.name = Units.Bandit;
         this.maxHp = 75;
