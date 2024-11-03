@@ -112,9 +112,7 @@ export class PossibleTargets {
         const nextUnit = AttackTurn.getNextAttackingUnit(
             UnitsForTurn.UnitsForTurn(attackingTeam),
         );
-        if (nextUnit) {
-            nextUnit.isCurrent = true;
-        } else {
+        if (!nextUnit) {
             AttackTurn.finishTurn(attackingTeam);
         }
     }

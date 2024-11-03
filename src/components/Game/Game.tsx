@@ -17,7 +17,7 @@ export const Game: React.FC = () => {
                 <TeamTable team={teamA} />
                 <TeamTable team={teamB} />
             </div>
-            <RoundInfo/>
+            <RoundInfo />
         </div>
     );
 };

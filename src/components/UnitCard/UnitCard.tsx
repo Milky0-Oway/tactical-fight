@@ -9,8 +9,13 @@ import { useGameContext } from '../Game/useGameContext';
 const cx = classNames.bind(styles);
 
 export const UnitCard: React.FC<UnitCardProps> = ({ attackingUnit, unit }) => {
-    const { attackingTeam, enemyTeam, hoverUnit, selectedTarget, handleSetTarget } =
-        useGameContext();
+    const {
+        attackingTeam,
+        enemyTeam,
+        hoverUnit,
+        selectedTarget,
+        handleSetTarget,
+    } = useGameContext();
 
     const [isCurrent, setIsCurrent] = useState(false);
 

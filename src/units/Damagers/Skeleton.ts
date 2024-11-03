@@ -8,10 +8,10 @@ export class Skeleton extends Unit {
         this.id = crypto.randomUUID();
         this.type = UnitType.Melee;
         this.name = Units.Skeleton;
-        this.maxHp = 80;
-        this.currentHp = 80;
-        this.damage = 15;
-        this.initiative = 40;
+        this.maxHp = 100;
+        this.currentHp = 100;
+        this.damage = 25;
+        this.initiative = 50;
         this.image = unitsImages.Skeleton;
     }
 }

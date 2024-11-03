@@ -66,7 +66,7 @@ export const selected = style({
 });
 
 export const hover = style({
-    transform: 'translateY(-10px)'
+    transform: 'translateY(-10px)',
 });
 
 export const image = style({

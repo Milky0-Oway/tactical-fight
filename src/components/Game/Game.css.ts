@@ -6,5 +6,5 @@ export const game = style({
     backgroundImage: 'url("../../assets/background.jpg")',
     display: 'flex',
     justifyContent: 'center',
-    alignItems: 'center'
+    alignItems: 'center',
 });

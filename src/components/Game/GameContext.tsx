@@ -14,7 +14,7 @@ interface GameContextType {
     attackingTeam: Team;
     enemyTeam: Team;
     winner: string | null;
-    hoverUnit: Unit| null;
+    hoverUnit: Unit | null;
     setHoverUnit: (unit: Unit | null) => void;
     handleNewTurn: () => void;
     handleSetTarget: (unit: Unit) => void;

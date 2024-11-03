@@ -9,7 +9,10 @@ export class AttackTurn {
         currentTarget: Unit | Unit[] | null,
     ): void => {
         const unitsInTurn = UnitsForTurn.UnitsForTurn(attackingTeam);
-        const currentAttackingUnit = this.getCurrentAttackingUnit(unitsInTurn, attackingTeam);
+        const currentAttackingUnit = this.getCurrentAttackingUnit(
+            unitsInTurn,
+            attackingTeam,
+        );
 
         if (!currentAttackingUnit || unitsInTurn.length === 0) {
             this.finishTurn(attackingTeam);
@@ -58,8 +61,12 @@ export class AttackTurn {
         attackingTeam.getUnits().forEach((unit) => unit.resetTurn());
     }
 
-    public static getCurrentAttackingUnit(unitsInTurn: Unit[], attackingTeam: Team): Unit | null {
-        const currentUnit = unitsInTurn.find((unit) => !unit.hasCompletedTheTurn) || null;
+    public static getCurrentAttackingUnit(
+        unitsInTurn: Unit[],
+        attackingTeam: Team,
+    ): Unit | null {
+        const currentUnit =
+            unitsInTurn.find((unit) => !unit.hasCompletedTheTurn) || null;
         if (!currentUnit) {
             attackingTeam.isAttackTurnCompleted = true;
             attackingTeam

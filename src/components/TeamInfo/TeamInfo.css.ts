@@ -5,5 +5,5 @@ export const container = style({
 });
 
 export const header = style({
-    textAlign: 'center'
+    textAlign: 'center',
 });

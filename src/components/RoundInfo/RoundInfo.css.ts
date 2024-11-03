@@ -7,5 +7,5 @@ export const container = style({
     justifyContent: 'center',
     width: '30%',
     height: '100%',
-    backgroundColor: '#000000cc'
+    backgroundColor: '#000000cc',
 });
