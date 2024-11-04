@@ -1,12 +1,14 @@
 import { Unit } from '../Unit';
 import { UnitBehavior } from './UnitBehavior';
-import { PossibleTargets } from '../../services/PossibleTargets';
 import { Team } from '../Team';
 
 export class MageBehavior implements UnitBehavior {
-    performAction(attacker: Unit, targets: Unit[], enemyTeam: Team): void {
-        const possibleTargets =
-            PossibleTargets.definePossibleRangeTargets(enemyTeam);
+    performAction(
+        attacker: Unit,
+        targets: Unit[],
+        teams: { alingTeam: Team; enemyTeam: Team },
+    ): void {
+        const possibleTargets = this.definePossibleTargets(teams);
         if (!attacker.isParalyzed) {
             targets.forEach((target) => {
                 if (possibleTargets.includes(target)) {
@@ -14,5 +16,9 @@ export class MageBehavior implements UnitBehavior {
                 }
             });
         }
+    }
+
+    definePossibleTargets(teams: { alingTeam: Team; enemyTeam: Team }): Unit[] {
+        return teams.enemyTeam.getAliveUnits();
     }
 }

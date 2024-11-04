@@ -1,14 +1,14 @@
 import { Unit } from '../Unit';
 import { UnitBehavior } from './UnitBehavior';
-import { PossibleTargets } from '../../services/PossibleTargets';
 import { Team } from '../Team';
 
 export class HealerMassBehavior implements UnitBehavior {
-    performAction(healer: Unit, targets: Unit[], healerTeam: Team): void {
-        const possibleTargets = PossibleTargets.definePossibleHealTargets(
-            healer,
-            healerTeam,
-        );
+    performAction(
+        healer: Unit,
+        targets: Unit[],
+        teams: { alingTeam: Team; enemyTeam: Team },
+    ): void {
+        const possibleTargets = this.definePossibleTargets(teams, healer);
         if (!healer.isParalyzed) {
             targets.forEach((target) => {
                 if (possibleTargets.includes(target)) {
@@ -16,5 +16,14 @@ export class HealerMassBehavior implements UnitBehavior {
                 }
             });
         }
+    }
+
+    definePossibleTargets(
+        teams: { alingTeam: Team; enemyTeam: Team },
+        attacker: Unit,
+    ): Unit[] {
+        return teams.alingTeam
+            .getAliveUnits()
+            .filter((unit) => unit !== attacker);
     }
 }

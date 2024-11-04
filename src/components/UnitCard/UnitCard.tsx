@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Unit, UnitType } from '../../units/Unit';
-import { PossibleTargets } from '../../services/PossibleTargets';
+import { Unit } from '../../units/Unit';
 import * as styles from './UnitCard.css';
 import classNames from 'classnames/bind';
 import { assignInlineVars } from '@vanilla-extract/dynamic';
@@ -30,23 +29,10 @@ export const UnitCard: React.FC<UnitCardProps> = ({ attackingUnit, unit }) => {
     let possibleTargets: Unit[] = [];
 
     if (attackingUnit) {
-        if (attackingUnit.type === UnitType.Melee) {
-            possibleTargets = PossibleTargets.definePossibleMeleeTargets(
-                attackingUnit,
-                enemyTeam,
-            );
-        } else if (
-            attackingUnit.type === UnitType.HealerMass ||
-            attackingUnit.type === UnitType.HealerSingle
-        ) {
-            possibleTargets = PossibleTargets.definePossibleHealTargets(
-                attackingUnit,
-                attackingTeam,
-            );
-        } else {
-            possibleTargets =
-                PossibleTargets.definePossibleRangeTargets(enemyTeam);
-        }
+        possibleTargets = attackingUnit.definePossibleTargets(
+            { alingTeam: attackingTeam, enemyTeam },
+            attackingUnit,
+        );
     }
 
     const handleClick = () => {

@@ -25,7 +25,10 @@ describe('Unit Classes', () => {
         test('should deal damage to multiple targets', () => {
             const archimage = new Archimage([1, 1]);
 
-            archimage.performAction(teamB.getUnits(), teamB);
+            archimage.performAction(teamB.getUnits(), {
+                alingTeam: teamA,
+                enemyTeam: teamB,
+            });
 
             teamB
                 .getUnits()
@@ -40,7 +43,10 @@ describe('Unit Classes', () => {
             const bandit = new Bandit([1, 1]);
             const target = teamB.getUnits()[3];
 
-            bandit.performAction(target, teamB);
+            bandit.performAction(target, {
+                alingTeam: teamA,
+                enemyTeam: teamB,
+            });
 
             expect(target.currentHp).toBeLessThan(target.maxHp);
         });
@@ -52,7 +58,10 @@ describe('Unit Classes', () => {
             const target = new Bandit([1, 2]);
             teamB.getUnits()[0] = target;
 
-            centaur.performAction(target, teamB);
+            centaur.performAction(target, {
+                alingTeam: teamA,
+                enemyTeam: teamB,
+            });
 
             expect(target.currentHp).toBeLessThan(target.maxHp);
         });
@@ -69,7 +78,10 @@ describe('Unit Classes', () => {
             teamA.getUnits()[1] = ally1;
             teamA.getUnits()[2] = ally2;
 
-            bishop.performAction([ally1, ally2], teamA);
+            bishop.performAction([ally1, ally2], {
+                alingTeam: teamA,
+                enemyTeam: teamB,
+            });
 
             expect(ally1.currentHp).toBeGreaterThan(ally1.maxHp - 20);
             expect(ally2.currentHp).toBeGreaterThan(ally2.maxHp - 30);
@@ -84,7 +96,7 @@ describe('Unit Classes', () => {
             teamA.getUnits()[0] = monk;
             teamA.getUnits()[1] = ally;
 
-            monk.performAction(ally, teamA);
+            monk.performAction(ally, { alingTeam: teamA, enemyTeam: teamB });
 
             expect(ally.currentHp).toBeGreaterThan(ally.maxHp - 30);
         });
@@ -96,7 +108,10 @@ describe('Unit Classes', () => {
 
             const target = teamB.getUnits()[2];
 
-            sirena.performAction(target, teamB);
+            sirena.performAction(target, {
+                alingTeam: teamA,
+                enemyTeam: teamB,
+            });
 
             expect(target.isParalyzed).toBe(true);
         });

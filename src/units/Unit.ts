@@ -23,8 +23,18 @@ export abstract class Unit {
         this.behavior = behavior;
     }
 
-    public performAction(target: Unit | Unit[], team: Team): void {
-        this.behavior.performAction(this, target, team);
+    public performAction(
+        target: Unit | Unit[],
+        teams: { alingTeam: Team; enemyTeam: Team },
+    ): void {
+        this.behavior.performAction(this, target, teams);
+    }
+
+    public definePossibleTargets(
+        teams: { alingTeam: Team; enemyTeam: Team },
+        attacker?: Unit,
+    ): Unit[] {
+        return this.behavior.definePossibleTargets(teams, attacker);
     }
 
     public paralyze(): void {

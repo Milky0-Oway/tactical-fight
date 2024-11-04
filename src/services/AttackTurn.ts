@@ -27,9 +27,15 @@ export class AttackTurn {
         if (!currentTarget) return;
 
         if (currentAttackingUnit.healingPower) {
-            currentAttackingUnit.performAction(currentTarget, attackingTeam);
+            currentAttackingUnit.performAction(currentTarget, {
+                alingTeam: attackingTeam,
+                enemyTeam,
+            });
         } else {
-            currentAttackingUnit.performAction(currentTarget, enemyTeam);
+            currentAttackingUnit.performAction(currentTarget, {
+                alingTeam: attackingTeam,
+                enemyTeam,
+            });
         }
 
         currentAttackingUnit.completeTurn();
