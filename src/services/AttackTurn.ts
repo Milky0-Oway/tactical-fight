@@ -3,58 +3,50 @@ import { Team } from '../units/Team';
 import { Unit } from '../units/Unit';
 
 export class AttackTurn {
+    private static paralyzedUnits: Unit[] = [];
+
     public static processAttackTurn = (
-        attackingTeam: Team,
-        enemyTeam: Team,
+        teamA: Team,
+        teamB: Team,
         currentTarget: Unit | Unit[] | null,
     ): void => {
-        const unitsInTurn = UnitsForTurn.UnitsForTurn(attackingTeam);
-        const currentAttackingUnit = this.getCurrentAttackingUnit(
-            unitsInTurn,
-            attackingTeam,
-        );
+        const unitsInTurn = UnitsForTurn.UnitsForTurn(teamA, teamB);
+        const currentAttackingUnit = this.getCurrentAttackingUnit(unitsInTurn);
 
         if (!currentAttackingUnit || unitsInTurn.length === 0) {
-            this.finishTurn(attackingTeam);
+            this.finishTurn(teamA, teamB);
             return;
         }
 
-        if (currentAttackingUnit.isDefending) {
-            this.skipTurn(currentAttackingUnit, unitsInTurn, attackingTeam);
-            return;
-        }
+        if (currentAttackingUnit.isDefending)
+            currentAttackingUnit.isDefending = false;
 
         if (!currentTarget) return;
 
-        if (currentAttackingUnit.healingPower) {
-            currentAttackingUnit.performAction(currentTarget, {
-                alingTeam: attackingTeam,
-                enemyTeam,
-            });
-        } else {
-            currentAttackingUnit.performAction(currentTarget, {
-                alingTeam: attackingTeam,
-                enemyTeam,
-            });
-        }
+        currentAttackingUnit.performAction(currentTarget, {
+            alingTeam: teamA.getUnits().includes(currentAttackingUnit)
+                ? teamA
+                : teamB,
+            enemyTeam: teamB.getUnits().includes(currentAttackingUnit)
+                ? teamA
+                : teamB,
+        });
 
         currentAttackingUnit.completeTurn();
-        this.setNextAttackingUnit(attackingTeam, unitsInTurn);
+        this.setNextAttackingUnit(teamA, teamB, unitsInTurn);
     };
 
     public static skipTurn(
         currentUnit: Unit,
         unitsInTurn: Unit[],
-        attackingTeam: Team,
+        teamA: Team,
+        teamB: Team,
     ): void {
         currentUnit.completeTurn();
 
         const nextAttackingUnit = this.getNextAttackingUnit(unitsInTurn);
         if (!nextAttackingUnit) {
-            attackingTeam.isAttackTurnCompleted = true;
-            attackingTeam
-                .getUnits()
-                .forEach((unit) => (unit.hasCompletedTheTurn = false));
+            this.finishTurn(teamA, teamB);
         }
     }
 
@@ -62,52 +54,29 @@ export class AttackTurn {
         return unitsInTurn.find((unit) => !unit.hasCompletedTheTurn) || null;
     }
 
-    public static finishTurn(attackingTeam: Team): void {
-        attackingTeam.isAttackTurnCompleted = true;
-        attackingTeam.getUnits().forEach((unit) => unit.resetTurn());
+    public static finishTurn(teamA: Team, teamB: Team): void {
+        this.paralyzedUnits.forEach((unit) => (unit.isParalyzed = false));
+        this.paralyzedUnits = [...teamA.getUnits(), ...teamB.getUnits()];
+        teamA
+            .getAliveUnits()
+            .forEach((unit) => (unit.hasCompletedTheTurn = false));
+        teamB
+            .getAliveUnits()
+            .forEach((unit) => (unit.hasCompletedTheTurn = false));
     }
 
-    public static getCurrentAttackingUnit(
-        unitsInTurn: Unit[],
-        attackingTeam: Team,
-    ): Unit | null {
+    public static getCurrentAttackingUnit(unitsInTurn: Unit[]): Unit | null {
         const currentUnit =
             unitsInTurn.find((unit) => !unit.hasCompletedTheTurn) || null;
-        if (!currentUnit) {
-            attackingTeam.isAttackTurnCompleted = true;
-            attackingTeam
-                .getUnits()
-                .forEach((unit) => (unit.hasCompletedTheTurn = false));
-        }
         return currentUnit;
     }
 
     private static setNextAttackingUnit(
-        attackingTeam: Team,
+        teamA: Team,
+        teamB: Team,
         unitsInTurn: Unit[],
     ): void {
         const nextUnit = this.getNextAttackingUnit(unitsInTurn);
-        if (!nextUnit) {
-            attackingTeam.isAttackTurnCompleted = true;
-            attackingTeam
-                .getUnits()
-                .forEach((unit) => (unit.hasCompletedTheTurn = false));
-        }
+        if (!nextUnit) this.finishTurn(teamA, teamB);
     }
-
-    public static switchTurn = (teamA: Team, teamB: Team): void => {
-        if (teamA.isMyTurn) {
-            teamA.isMyTurn = false;
-            teamB.isMyTurn = true;
-            teamB.isAttackTurnCompleted = false;
-            teamB.clearDefending();
-            teamA.clearParalyzing();
-        } else {
-            teamA.isMyTurn = true;
-            teamA.isAttackTurnCompleted = false;
-            teamB.isMyTurn = false;
-            teamA.clearDefending();
-            teamB.clearParalyzing();
-        }
-    };
 }

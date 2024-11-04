@@ -51,33 +51,17 @@ describe('AttackTurn', () => {
         });
     });
 
-    describe('finishTurn', () => {
-        it('should complete all units turns in team and set team status', () => {
-            AttackTurn.finishTurn(teamA);
-
-            expect(teamA.isAttackTurnCompleted).toBe(true);
-            teamA.getUnits().forEach((unit) => {
-                expect(unit.hasCompletedTheTurn).toBe(false);
-            });
-        });
-    });
-
-    describe('switchTurn', () => {
-        it('should switch turn to other team and reset turn state', () => {
-            teamA.isMyTurn = true;
-            AttackTurn.switchTurn(teamA, teamB);
-
-            expect(teamA.isMyTurn).toBe(false);
-            expect(teamB.isMyTurn).toBe(true);
-        });
-    });
-
     describe('skipTurn', () => {
         it('should mark unit turn as completed and continue to next unit', () => {
-            const unit = UnitsForTurn.UnitsForTurn(teamA)[0];
-            const nextUnit = UnitsForTurn.UnitsForTurn(teamA)[1];
+            const unit = UnitsForTurn.UnitsForTurn(teamA, teamB)[0];
+            const nextUnit = UnitsForTurn.UnitsForTurn(teamA, teamB)[1];
 
-            AttackTurn.skipTurn(unit, teamA.getUnits(), teamA);
+            AttackTurn.skipTurn(
+                unit,
+                UnitsForTurn.UnitsForTurn(teamA, teamB),
+                teamA,
+                teamB,
+            );
 
             expect(unit.hasCompletedTheTurn).toBe(true);
             expect(nextUnit.hasCompletedTheTurn).toBe(false);
@@ -86,13 +70,12 @@ describe('AttackTurn', () => {
 
     describe('getCurrentAttackingUnit', () => {
         it('should return the current attacking unit with uncompleted turn', () => {
-            const unit1 = UnitsForTurn.UnitsForTurn(teamA)[0];
-            const unit2 = UnitsForTurn.UnitsForTurn(teamA)[1];
+            const unit1 = UnitsForTurn.UnitsForTurn(teamA, teamB)[0];
+            const unit2 = UnitsForTurn.UnitsForTurn(teamA, teamB)[1];
             unit1.hasCompletedTheTurn = true;
 
             const currentUnit = AttackTurn.getCurrentAttackingUnit(
-                UnitsForTurn.UnitsForTurn(teamA),
-                teamA,
+                UnitsForTurn.UnitsForTurn(teamA, teamB),
             );
 
             expect(currentUnit).toBe(unit2);

@@ -45,14 +45,6 @@ export class Team {
     public hasAliveUnits(): boolean {
         return this.getAliveUnits().length > 0;
     }
-
-    public clearDefending(): void {
-        this.units.forEach((unit) => (unit.isDefending = false));
-    }
-
-    public clearParalyzing(): void {
-        this.units.forEach((unit) => (unit.isParalyzed = false));
-    }
 }
 
 export enum teams {

@@ -23,7 +23,7 @@ describe('UnitsForTurn', () => {
         teamA.getUnits()[0].isAlive = jest.fn().mockReturnValue(false);
         teamA.getUnits()[1].isParalyzed = true;
 
-        const result = UnitsForTurn.UnitsForTurn(teamA);
+        const result = UnitsForTurn.UnitsForTurn(teamA, teamA);
 
         expect(result).not.toContain(teamA.getUnits()[0]);
         expect(result).not.toContain(teamA.getUnits()[1]);
@@ -36,7 +36,7 @@ describe('UnitsForTurn', () => {
         teamA.getUnits().forEach((unit, index) => {
             unit.initiative = index;
         });
-        const result = UnitsForTurn.UnitsForTurn(teamA);
+        const result = UnitsForTurn.UnitsForTurn(teamA, teamA);
 
         for (let i = 1; i < result.length; i++) {
             expect(result[i - 1].initiative).toBeGreaterThanOrEqual(
@@ -51,12 +51,12 @@ describe('UnitsForTurn', () => {
             unit.isParalyzed = true;
         });
 
-        const result = UnitsForTurn.UnitsForTurn(teamA);
+        const result = UnitsForTurn.UnitsForTurn(teamA, teamA);
         expect(result).toEqual([]);
     });
 
     test('should return an array of units when no units are dead or paralyzed', () => {
-        const result = UnitsForTurn.UnitsForTurn(teamA);
-        expect(result.length).toBe(teamA.getUnits().length);
+        const result = UnitsForTurn.UnitsForTurn(teamA, teamA);
+        expect(result.length).toBe(teamA.getUnits().length * 2);
     });
 });

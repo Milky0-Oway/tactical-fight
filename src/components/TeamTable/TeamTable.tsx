@@ -8,7 +8,7 @@ import { useGameContext } from '../Game/useGameContext';
 const cx = classNames.bind(styles);
 
 export const TeamTable: React.FC<TeamTableProps> = ({ team }) => {
-    const { turn, currentUnit, handleNewTurn, handleAction, handleCancel } =
+    const { currentUnit, handleNewTurn, handleAction, handleCancel } =
         useGameContext();
 
     const handleDefend = () => {
@@ -38,7 +38,7 @@ export const TeamTable: React.FC<TeamTableProps> = ({ team }) => {
                     );
                 })}
             </div>
-            {turn === team.name && (
+            {currentUnit && team.getUnits().includes(currentUnit) && (
                 <div className={styles.buttons}>
                     <button onClick={handleDefend}>Defend</button>
                     <button onClick={handleAction}>Do action</button>

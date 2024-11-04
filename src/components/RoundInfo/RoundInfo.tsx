@@ -1,17 +1,19 @@
 import React from 'react';
 import { container } from './RoundInfo.css';
 import { useGameContext } from '../Game/useGameContext';
-import { TeamInfo } from '../TeamInfo/TeamInfo';
+import { UnitsForTurn } from '../../services/UnitsForTurn';
+import { UnitInfo } from '../UnitInfo/UnitInfo';
 
 export const RoundInfo: React.FC = () => {
-    const { turn, teamA, teamB } = useGameContext();
+    const { teamA, teamB } = useGameContext();
+    const units = UnitsForTurn.UnitsForTurn(teamA, teamB);
 
     return (
         <div className={container}>
             <h2>Round Info</h2>
-            <p>Current turn: team {turn}</p>
-            <TeamInfo team={teamA} />
-            <TeamInfo team={teamB} />
+            {units.map((unit) => {
+                return <UnitInfo unit={unit} />;
+            })}
         </div>
     );
 };

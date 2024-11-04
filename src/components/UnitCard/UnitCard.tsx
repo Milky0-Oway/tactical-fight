@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import { Unit } from '../../units/Unit';
 import * as styles from './UnitCard.css';
 import classNames from 'classnames/bind';
@@ -9,28 +9,26 @@ const cx = classNames.bind(styles);
 
 export const UnitCard: React.FC<UnitCardProps> = ({ attackingUnit, unit }) => {
     const {
-        attackingTeam,
-        enemyTeam,
+        teamA,
+        teamB,
+        currentUnit,
         hoverUnit,
         selectedTarget,
         handleSetTarget,
     } = useGameContext();
 
-    const [isCurrent, setIsCurrent] = useState(false);
-
-    useEffect(() => {
-        if (attackingTeam.getUnits().includes(unit) && unit.isAlive()) {
-            setIsCurrent(unit === attackingUnit);
-        } else {
-            setIsCurrent(false);
-        }
-    }, [attackingTeam, unit, attackingUnit]);
-
     let possibleTargets: Unit[] = [];
 
     if (attackingUnit) {
         possibleTargets = attackingUnit.definePossibleTargets(
-            { alingTeam: attackingTeam, enemyTeam },
+            {
+                alingTeam: teamA.getUnits().includes(attackingUnit)
+                    ? teamA
+                    : teamB,
+                enemyTeam: teamB.getUnits().includes(attackingUnit)
+                    ? teamA
+                    : teamB,
+            },
             attackingUnit,
         );
     }
@@ -47,7 +45,7 @@ export const UnitCard: React.FC<UnitCardProps> = ({ attackingUnit, unit }) => {
         defend: unit.isDefending,
         dead: !unit.isAlive(),
         possible: possibleTargets.includes(unit),
-        current: isCurrent,
+        current: unit === currentUnit,
         selected: unit === selectedTarget,
         hover: unit === hoverUnit,
     });

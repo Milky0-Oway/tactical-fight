@@ -36,6 +36,17 @@ describe('Unit Classes', () => {
                     expect(unit.currentHp).toBeLessThan(unit.maxHp),
                 );
         });
+
+        test('should define multiple targets', () => {
+            const archimage = new Archimage([1, 1]);
+
+            const targets = archimage.definePossibleTargets({
+                alingTeam: teamA,
+                enemyTeam: teamB,
+            });
+
+            expect(targets).toHaveLength(6);
+        });
     });
 
     describe('Bandit (Range Behavior)', () => {
@@ -49,6 +60,17 @@ describe('Unit Classes', () => {
             });
 
             expect(target.currentHp).toBeLessThan(target.maxHp);
+        });
+
+        test('should define multiple targets', () => {
+            const bandit = new Bandit([1, 1]);
+
+            const targets = bandit.definePossibleTargets({
+                alingTeam: teamA,
+                enemyTeam: teamB,
+            });
+
+            expect(targets).toHaveLength(6);
         });
     });
 
@@ -64,6 +86,208 @@ describe('Unit Classes', () => {
             });
 
             expect(target.currentHp).toBeLessThan(target.maxHp);
+        });
+
+        describe('should define targets', () => {
+            describe('unit is in team A', () => {
+                test("unit's position is [2,1]", () => {
+                    const unit = new Centaur([2, 1]);
+                    const targets = unit.definePossibleTargets(
+                        { alingTeam: teamA, enemyTeam: teamB },
+                        unit,
+                    );
+
+                    expect(targets).toHaveLength(2);
+                    expect(targets).toContainEqual(
+                        expect.objectContaining({ position: [3, 1] }),
+                    );
+                    expect(targets).toContainEqual(
+                        expect.objectContaining({ position: [3, 2] }),
+                    );
+                });
+
+                test("unit's position is [2,2]", () => {
+                    const unit = new Centaur([2, 2]);
+                    const targets = unit.definePossibleTargets(
+                        { alingTeam: teamA, enemyTeam: teamB },
+                        unit,
+                    );
+
+                    expect(targets).toHaveLength(3);
+                    expect(targets).toContainEqual(
+                        expect.objectContaining({ position: [3, 1] }),
+                    );
+                    expect(targets).toContainEqual(
+                        expect.objectContaining({ position: [3, 2] }),
+                    );
+                    expect(targets).toContainEqual(
+                        expect.objectContaining({ position: [3, 3] }),
+                    );
+                });
+
+                test("unit's position is [2,3]", () => {
+                    const unit = new Centaur([2, 3]);
+                    const targets = unit.definePossibleTargets(
+                        { alingTeam: teamA, enemyTeam: teamB },
+                        unit,
+                    );
+
+                    expect(targets).toHaveLength(2);
+                    expect(targets).toContainEqual(
+                        expect.objectContaining({ position: [3, 2] }),
+                    );
+                    expect(targets).toContainEqual(
+                        expect.objectContaining({ position: [3, 3] }),
+                    );
+                });
+
+                test('unit is in the second line', () => {
+                    const unit = new Centaur([1, 2]);
+                    const targets = unit.definePossibleTargets(
+                        { alingTeam: teamA, enemyTeam: teamB },
+                        unit,
+                    );
+
+                    expect(targets).toHaveLength(0);
+                });
+
+                test('first line is dead', () => {
+                    const unit = new Centaur([2, 1]);
+                    teamB.getUnits()[0].currentHp = 0;
+                    teamB.getUnits()[1].currentHp = 0;
+                    teamB.getUnits()[2].currentHp = 0;
+                    const targets = unit.definePossibleTargets(
+                        { alingTeam: teamA, enemyTeam: teamB },
+                        unit,
+                    );
+
+                    expect(targets).toHaveLength(3);
+                    expect(targets).toContainEqual(
+                        expect.objectContaining({ position: [4, 1] }),
+                    );
+                    expect(targets).toContainEqual(
+                        expect.objectContaining({ position: [4, 2] }),
+                    );
+                    expect(targets).toContainEqual(
+                        expect.objectContaining({ position: [4, 3] }),
+                    );
+                });
+            });
+
+            describe('unit is in team B', () => {
+                test("unit's position is [3,1]", () => {
+                    const unit = new Centaur([3, 1]);
+                    const targets = unit.definePossibleTargets(
+                        { alingTeam: teamB, enemyTeam: teamA },
+                        unit,
+                    );
+
+                    expect(targets).toHaveLength(2);
+                    expect(targets).toContainEqual(
+                        expect.objectContaining({ position: [2, 1] }),
+                    );
+                    expect(targets).toContainEqual(
+                        expect.objectContaining({ position: [2, 2] }),
+                    );
+                });
+
+                test("unit's position is [3,2]", () => {
+                    const unit = new Centaur([3, 2]);
+                    const targets = unit.definePossibleTargets(
+                        { alingTeam: teamB, enemyTeam: teamA },
+                        unit,
+                    );
+
+                    expect(targets).toHaveLength(3);
+                    expect(targets).toContainEqual(
+                        expect.objectContaining({ position: [2, 1] }),
+                    );
+                    expect(targets).toContainEqual(
+                        expect.objectContaining({ position: [2, 2] }),
+                    );
+                    expect(targets).toContainEqual(
+                        expect.objectContaining({ position: [2, 3] }),
+                    );
+                });
+
+                test("unit's position is [3,3]", () => {
+                    const unit = new Centaur([3, 3]);
+                    const targets = unit.definePossibleTargets(
+                        { alingTeam: teamB, enemyTeam: teamA },
+                        unit,
+                    );
+
+                    expect(targets).toHaveLength(2);
+                    expect(targets).toContainEqual(
+                        expect.objectContaining({ position: [2, 2] }),
+                    );
+                    expect(targets).toContainEqual(
+                        expect.objectContaining({ position: [2, 3] }),
+                    );
+                });
+
+                test('unit is in the second line', () => {
+                    const unit = new Centaur([4, 2]);
+                    const targets = unit.definePossibleTargets(
+                        { alingTeam: teamB, enemyTeam: teamA },
+                        unit,
+                    );
+
+                    expect(targets).toHaveLength(0);
+                });
+
+                test('first line is dead', () => {
+                    const unit = new Centaur([3, 1]);
+                    teamA.getUnits()[3].currentHp = 0;
+                    teamA.getUnits()[4].currentHp = 0;
+                    teamA.getUnits()[5].currentHp = 0;
+                    const targets = unit.definePossibleTargets(
+                        { alingTeam: teamB, enemyTeam: teamA },
+                        unit,
+                    );
+
+                    expect(targets).toHaveLength(3);
+                    expect(targets).toContainEqual(
+                        expect.objectContaining({ position: [1, 1] }),
+                    );
+                    expect(targets).toContainEqual(
+                        expect.objectContaining({ position: [1, 2] }),
+                    );
+                    expect(targets).toContainEqual(
+                        expect.objectContaining({ position: [1, 3] }),
+                    );
+                });
+
+                test("unit's position is [3,1] and [2,1] and [2,2] are dead", () => {
+                    const unit = new Centaur([3, 1]);
+                    teamA.getUnits()[3].currentHp = 0;
+                    teamA.getUnits()[4].currentHp = 0;
+                    const targets = unit.definePossibleTargets(
+                        { alingTeam: teamB, enemyTeam: teamA },
+                        unit,
+                    );
+
+                    expect(targets).toHaveLength(1);
+                    expect(targets).toContainEqual(
+                        expect.objectContaining({ position: [2, 3] }),
+                    );
+                });
+
+                test("unit's position is [3,3] and [2,3] and [2,2] are dead", () => {
+                    const unit = new Centaur([3, 1]);
+                    teamA.getUnits()[5].currentHp = 0;
+                    teamA.getUnits()[4].currentHp = 0;
+                    const targets = unit.definePossibleTargets(
+                        { alingTeam: teamB, enemyTeam: teamA },
+                        unit,
+                    );
+
+                    expect(targets).toHaveLength(1);
+                    expect(targets).toContainEqual(
+                        expect.objectContaining({ position: [2, 1] }),
+                    );
+                });
+            });
         });
     });
 
@@ -114,6 +338,17 @@ describe('Unit Classes', () => {
             });
 
             expect(target.isParalyzed).toBe(true);
+        });
+
+        test('should define multiple targets', () => {
+            const sirena = new Sirena([1, 1]);
+
+            const targets = sirena.definePossibleTargets({
+                alingTeam: teamA,
+                enemyTeam: teamB,
+            });
+
+            expect(targets).toHaveLength(6);
         });
     });
 });

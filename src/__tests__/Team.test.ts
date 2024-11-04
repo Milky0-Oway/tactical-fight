@@ -73,24 +73,6 @@ describe('Team Class', () => {
         expect(teamA.hasAliveUnits()).toBe(false);
     });
 
-    test('should clear defending status for all units', () => {
-        teamA.getUnits().forEach((unit) => (unit.isDefending = true));
-        teamA.clearDefending();
-
-        teamA.getUnits().forEach((unit) => {
-            expect(unit.isDefending).toBe(false);
-        });
-    });
-
-    test('should clear paralyzing status for all units', () => {
-        teamA.getUnits().forEach((unit) => (unit.isParalyzed = true));
-        teamA.clearParalyzing();
-
-        teamA.getUnits().forEach((unit) => {
-            expect(unit.isParalyzed).toBe(false);
-        });
-    });
-
     test('should complete attack turn status correctly', () => {
         expect(teamA.isAttackTurnCompleted).toBe(false);
         teamA.isAttackTurnCompleted = true;
